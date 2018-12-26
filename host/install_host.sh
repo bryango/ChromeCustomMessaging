@@ -20,7 +20,7 @@ else
   fi
 fi
 
-HOST_NAME=com.google.chrome.example.echo
+HOST_NAME=com.google.chrome.custom.messaging
 
 # Create directory to store native messaging host.
 mkdir -p "$TARGET_DIR"
