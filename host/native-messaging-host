@@ -93,7 +93,7 @@ if Tkinter:
       try:
         send_message(text)
       except IOError:
-        tkMessageBox.showinfo('Native Messaging Example',
+        tkMessageBox.showinfo('Native Messaging',
                               'Failed to send message.')
         sys.exit(1)
 
@@ -113,7 +113,7 @@ def Main():
   queue = Queue.Queue()
 
   main_window = NativeMessagingWindow(queue)
-  main_window.master.title('Native Messaging Example')
+  main_window.master.title('Native Messaging')
 
   thread = threading.Thread(target=read_thread_func, args=(queue,))
   thread.daemon = True

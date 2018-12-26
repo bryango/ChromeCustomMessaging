@@ -4,7 +4,7 @@
 
 {
   "name": "com.google.chrome.custom.messaging",
-  "description": "Chrome Native Messaging API Example Host",
+  "description": "Chrome Native Messaging API Host",
   "path": "HOST_PATH",
   "type": "stdio",
   "allowed_origins": [

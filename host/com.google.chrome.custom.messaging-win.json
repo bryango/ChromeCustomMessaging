@@ -4,8 +4,8 @@
 
 {
   "name": "com.google.chrome.custom.messaging",
-  "description": "Chrome Native Messaging API Example Host",
-  "path": "native-messaging-example-host.bat",
+  "description": "Chrome Native Messaging API Host",
+  "path": "native-messaging-host.bat",
   "type": "stdio",
   "allowed_origins": [
     "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
