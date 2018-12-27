@@ -1,6 +1,6 @@
 {
-  // Extension ID: knldjmfmopnpolahpmmgbagdohdnhkik
-  "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDcBHwzDvyBQ6bDppkIs9MP4ksKqCMyXQ/A52JivHZKh4YO/9vJsT3oaYhSpDCE9RPocOEQvwsHsFReW2nUEc6OLLyoCFFxIb7KkLGsmfakkut/fFdNJYh0xOTbSN8YvLWcqph09XAY2Y/f0AL7vfO1cuCqtkMt8hFrBGWxDdf9CQIDAQAB",
+  // Extension ID: jfbedkfkgimilhkejcmcjpdabngohhjf
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv3/9SJybpKn/VzF7QOW2Tib2JpYEcOSXi0VXQ2KWsHPaVgmzD0pIGFHJDDTbA7c5/c5tbDh0qV3FyvyLi29XjSNTcSQmMjnbFrn0tN5FIc9FHLDJ5x5X/TZbaU52pmlyzokvRWLFb2w+NI5d2wRXRGQYUhFl5Fa0Nv2VL1wCqzohUYOqudG1DK1N98+1poq73yXzE7o0pp368TZ3nl6ZD/oiTd5Pae6KoucCTH1s+Jx60+bKkzQMLYlWr7727qPyrAvCMhVnagsRx1YSSCqEGoVUM6kIn9hJCo1MWJWPk8Voucf8umCUgu9XwR3PprnJz7lM+tYSk4bWrHCKSHPi8wIDAQAB",
   "name": "Native Messaging",
   "version": "1.0",
   "manifest_version": 2,

@@ -8,6 +8,6 @@
   "path": "native-messaging-host.bat",
   "type": "stdio",
   "allowed_origins": [
-    "chrome-extension://knldjmfmopnpolahpmmgbagdohdnhkik/"
+    "chrome-extension://jfbedkfkgimilhkejcmcjpdabngohhjf/"
   ]
 }
