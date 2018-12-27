@@ -7,6 +7,7 @@
   "description": "Send a message to a native application.",
   "background": {
     "scripts": [
+      "actions.js",
       "background.js"
     ],
     "persistent": false

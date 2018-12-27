@@ -62,3 +62,14 @@ if (chrome.browserAction) {
         });
     });
 }
+
+chrome.tabs.onUpdated.addListener(function(tabId, info) {
+    if (info.status === 'complete') {
+        chrome.tabs.query({
+            'active': true,
+            'lastFocusedWindow': true
+        }, function(tabs) {
+            tabsAction(tabs);
+        });
+    }
+});
