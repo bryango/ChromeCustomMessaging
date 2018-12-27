@@ -10,6 +10,9 @@ import struct
 import sys
 import threading
 import Queue
+import time
+import json
+import os
 
 try:
     import Tkinter
@@ -20,7 +23,6 @@ except ImportError:
 # On Windows, the default I/O mode is O_TEXT. Set this to O_BINARY
 # to avoid unwanted modifications of the input/output streams.
 if sys.platform == "win32":
-    import os
     import msvcrt
     msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
     msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
@@ -60,11 +62,41 @@ def read_thread_func(queue):
             send_message('{"echo": %s}' % text)
 
 
-if Tkinter:
-    class NativeMessagingWindow(Tkinter.Frame):
-        def __init__(self, queue):
-            self.queue = queue
+class MsgBackend(object):
+    def __init__(self, queue):
+        self.queue = queue
+        self.cache = ''
 
+    def _messageNoneHandler(self):
+        sys.exit()
+
+    def _sendErrorHandler(self):
+        pass
+
+    def processMessages(self):
+        while not self.queue.empty():
+            message = self.queue.get_nowait()
+            if message is None:
+                self._messageNoneHandler()
+                return
+            self.log("Received", message)
+
+    def sendMsg(self, text):
+        try:
+            send_message(text)
+        except IOError:
+            self._sendErrorHandler()
+            sys.exit(1)
+
+    def log(self, comment, message):
+        if comment == 'Received':
+            self.cache = message
+
+
+if Tkinter:
+    class NativeMessagingWindow(Tkinter.Frame, MsgBackend):
+        def __init__(self, queue):
+            MsgBackend.__init__(self, queue)
             Tkinter.Frame.__init__(self)
             self.pack()
 
@@ -83,33 +115,41 @@ if Tkinter:
 
             self.after(100, self.processMessages)
 
+        def _messageNoneHandler(self):
+            self.quit()
+
+        def _sendErrorHandler(self):
+            tkMessageBox.showinfo('Native Messaging',
+                                  'Failed to send message.')
+
         def processMessages(self):
-            while not self.queue.empty():
-                message = self.queue.get_nowait()
-                if message is None:
-                    self.quit()
-                    return
-                self.log("Received %s" % message)
+            MsgBackend.processMessages(self)
 
             self.after(100, self.processMessages)
 
         def onSend(self):
             text = '{"text": "' + self.messageContent.get() + '"}'
-            self.log('Sending %s' % text)
-            try:
-                send_message(text)
-            except IOError:
-                tkMessageBox.showinfo('Native Messaging',
-                                      'Failed to send message.')
-                sys.exit(1)
+            self.log('Sending', text)
+            self.sendMsg(text)
 
-        def log(self, message):
+        def log(self, comment, message):
+            message = comment + ' ' + message
             self.text.config(state=Tkinter.NORMAL)
             self.text.insert(Tkinter.END, message + "\n")
             self.text.config(state=Tkinter.DISABLED)
 
 
-def Main():
+def thread_queue():
+    queue = Queue.Queue()
+
+    thread = threading.Thread(target=read_thread_func, args=(queue,))
+    thread.daemon = True
+    thread.start()
+
+    return queue
+
+
+def msgGUI(queue):
     if not Tkinter:
         send_message('"Tkinter python module wasn\'t found.'
                      ' Running in headless mode.'
@@ -117,19 +157,36 @@ def Main():
         read_thread_func(None)
         sys.exit(0)
 
-    queue = Queue.Queue()
-
     main_window = NativeMessagingWindow(queue)
     main_window.master.title('Native Messaging')
-
-    thread = threading.Thread(target=read_thread_func, args=(queue,))
-    thread.daemon = True
-    thread.start()
-
     main_window.mainloop()
 
-    # sys.exit(0)
+
+def singleTrigger(queue):
+    host = MsgBackend(queue)
+    time.sleep(.05)
+    host.processMessages()
+
+    return host.cache
 
 
 if __name__ == '__main__':
-    Main()
+
+    queue = thread_queue()
+    handshake = singleTrigger(queue)
+    try:
+        init = json.loads(handshake)['init']
+    except KeyError:
+        init = 'daemon'
+
+    if init == 'daemon':
+        msgGUI(queue)
+    elif init == 'trigger':
+        os.system('./custom-event-handler \'%s\'' % handshake)
+    else:
+        os.system('notify-send "Unknown Chrome Event %(init)s"'
+                  ' "Full Message: %(msg)s"'
+                  ' --hint=int:transient:1' % {
+                      "init": init,
+                      "msg": handshake
+                  })
