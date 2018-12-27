@@ -24,7 +24,9 @@ function onNativeMessage(message) {
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('connect-button').addEventListener(
-      'click', connect);
+      'click', function() {
+        connect('daemon');
+      });
   document.getElementById('send-message-button').addEventListener(
       'click', function() {
         sendNativeMessage();

@@ -4,6 +4,6 @@ function tabsAction(tabs) {
     var url = tabs[0].url;
     if (url.includes('https://mail.pku.edu.cn')
     && !url.includes('coremail/XT')) {
-        connect();
+        connect("trigger", {"action": "pkumail"});
     }
 }

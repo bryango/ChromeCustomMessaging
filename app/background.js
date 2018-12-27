@@ -35,9 +35,13 @@ function onDisconnected() {
     updateUiState();
 }
 
-function connect() {
-    appendMessage("Connecting to native messaging host <b>" + hostName + "</b>")
+function connect(init_msg, msg_dict = {}) {
+    appendMessage("Connecting to native messaging host <b>" + hostName + "</b>");
     port = chrome.runtime.connectNative(hostName);
+
+    msg_dict["init"] = init_msg;
+    sendNativeMessage(msg_dict);
+
     port.onMessage.addListener(onNativeMessage);
     port.onDisconnect.addListener(onDisconnected);
     updateUiState();
@@ -54,7 +58,7 @@ if (!document.URL.includes(webui)) {
     ];
     events.forEach(function(event) {
         event.addListener(function() {
-            connect();
+            connect('trigger', {"stat": "startup"});
             console.log('Connection Initiated');
         });
     });
