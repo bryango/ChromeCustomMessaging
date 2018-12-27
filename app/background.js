@@ -1,16 +1,25 @@
 var port = null;
 var hostName = "com.google.chrome.custom.messaging";
 
-function appendMessage(text) {}
+function appendMessage(text) {
+    console.log(text);
+}
 
 function updateUiState() {}
 
 function onNativeMessage(message) {}
 
-function sendNativeMessage() {
-    message = {
-        "text": document.getElementById('input-text').value
-    };
+function sendNativeMessage(message) {
+    if (typeof message === "undefined") {
+        if (typeof document.getElementById('input-text') !== "undefined") {
+            message = {
+                "text": document.getElementById('input-text').value
+            };
+        } else {
+            console.log('Fail to send message: no input');
+            return;
+        }
+    }
     port.postMessage(message);
     appendMessage("Sent message: <b>" + JSON.stringify(message) + "</b>");
 }

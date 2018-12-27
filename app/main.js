@@ -2,17 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var port = null;
-
-var getKeys = function(obj){
-   var keys = [];
-   for(var key in obj){
-      keys.push(key);
-   }
-   return keys;
-}
-
-
 function appendMessage(text) {
   document.getElementById('response').innerHTML += "<p>" + text + "</p>";
 }
@@ -29,35 +18,16 @@ function updateUiState() {
   }
 }
 
-function sendNativeMessage() {
-  message = {"text": document.getElementById('input-text').value};
-  port.postMessage(message);
-  appendMessage("Sent message: <b>" + JSON.stringify(message) + "</b>");
-}
-
 function onNativeMessage(message) {
   appendMessage("Received message: <b>" + JSON.stringify(message) + "</b>");
-}
-
-function onDisconnected() {
-  appendMessage("Failed to connect: " + chrome.runtime.lastError.message);
-  port = null;
-  updateUiState();
-}
-
-function connect() {
-  var hostName = "com.google.chrome.custom.messaging";
-  appendMessage("Connecting to native messaging host <b>" + hostName + "</b>")
-  port = chrome.runtime.connectNative(hostName);
-  port.onMessage.addListener(onNativeMessage);
-  port.onDisconnect.addListener(onDisconnected);
-  updateUiState();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('connect-button').addEventListener(
       'click', connect);
   document.getElementById('send-message-button').addEventListener(
-      'click', sendNativeMessage);
+      'click', function() {
+        sendNativeMessage();
+      });
   updateUiState();
 });
