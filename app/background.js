@@ -1,6 +1,10 @@
+
+// Initial variables
 var port = null;
 var hostName = "com.google.chrome.custom.messaging";
+var webui = 'main.html'
 
+// Logging functions
 function appendMessage(text) {
     console.log(text);
 }
@@ -9,6 +13,7 @@ function updateUiState() {}
 
 function onNativeMessage(message) {}
 
+// Communications
 function sendNativeMessage(message) {
     if (typeof message === "undefined") {
         if (typeof document.getElementById('input-text') !== "undefined") {
@@ -38,7 +43,11 @@ function connect() {
     updateUiState();
 }
 
-if (chrome.runtime) {
+
+// Background process
+if (!document.URL.includes(webui)) {
+
+    // Extension startup
     var events = [
         chrome.runtime.onStartup,
         chrome.runtime.onInstalled
@@ -49,27 +58,25 @@ if (chrome.runtime) {
             console.log('Connection Initiated');
         });
     });
-    // chrome.runtime.onStartup.addListener(function() {
-    //     connect();
-    // });
-}
 
-if (chrome.browserAction) {
+    // Open webui (usually for debugging)
     chrome.browserAction.onClicked.addListener(function(activeTab) {
-        var newURL = "./main.html";
+        var newURL = "./" + webui;
         chrome.tabs.create({
             url: newURL
         });
     });
-}
 
-chrome.tabs.onUpdated.addListener(function(tabId, info) {
-    if (info.status === 'complete') {
-        chrome.tabs.query({
-            'active': true,
-            'lastFocusedWindow': true
-        }, function(tabs) {
-            tabsAction(tabs);
-        });
-    }
-});
+    // Background monitoring
+    chrome.tabs.onUpdated.addListener(function(tabId, info) {
+        if (info.status === 'complete') {
+            chrome.tabs.query({
+                'active': true,
+                'lastFocusedWindow': true
+            }, function(tabs) {
+                tabsAction(tabs);
+            });
+        }
+    });
+
+}
